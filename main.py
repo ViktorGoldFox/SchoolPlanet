@@ -8,6 +8,8 @@ from typing import List, Optional
 
 from datetime import date
 
+import uvicorn
+
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,19 +22,20 @@ import TokenGen
 
 app = FastAPI()
 
-origins = [
-    "http://127.0.0.1",
-    "http://localhost",
+#origins = [
+    #"http://127.0.0.1",
+    #"http://localhost",
+    #"https://freesheld.com"
     # Add other origins if needed
-]
+#]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # Allows all origins if set to ["*"]
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
-)
+#app.add_middleware(
+#    CORSMiddleware,
+#    allow_origins=origins,  # Allows all origins if set to ["*"]
+#    allow_credentials=True,
+#    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
+#    allow_headers=["*"],  # Allows all headers
+#)
 
 class Homework(BaseModel):
     id: int
