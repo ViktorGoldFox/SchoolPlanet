@@ -13,12 +13,12 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 
-import database as db
+import Deperance.database as db
 
 import json
 import pickle
 
-import TokenGen
+import Deperance.TokenGen as TokenGen
 
 app = FastAPI()
 
@@ -59,7 +59,7 @@ class HomeworkUpdate(BaseModel):
 
 homeworks = []
 
-with open('homeworks_data.pkl', 'rb') as f:
+with open('DataBases/homeworks_data.pkl', 'rb') as f:
     if f != None:
         homeworks = pickle.load(f)
 
@@ -103,7 +103,7 @@ def read_item(token: str):
 
 @app.get("/schedule")
 def get_schedule():
-    with open("Schedule.json", "r+") as file:
+    with open("DataBases/Schedule.json", "r+") as file:
         data = file.read()
     
     return json.loads(data)
@@ -119,7 +119,7 @@ def create_homework(homework: HomeworkCreate):
     )
     homeworks.append(new_homework.dict())
     
-    with open('homeworks_data.pkl', 'wb') as f:
+    with open('DataBases/homeworks_data.pkl', 'wb') as f:
         pickle.dump(homeworks, f)
     
     return new_homework
@@ -131,7 +131,7 @@ def delete_homework(homework_id: int):
         if homework["id"] == homework_id:
             homeworks.remove(homework)
             return homework
-    with open('homeworks_data.pkl', 'wb') as f:
+    with open('DataBases/homeworks_data.pkl', 'wb') as f:
         pickle.dump(homeworks, f)
     raise HTTPException(status_code=404, detail="Homework not found")
 
