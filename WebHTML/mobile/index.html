@@ -507,24 +507,7 @@
                 </select>
                 <input type="date" id="select_date">
                 <input type="date" id="select_date_two" style="display: none;">
-                <select name="LessonName" id="LessonNameSelect" style="display: none;">
-                    <option value="All">Все</option>
-                    <option value="Русский язык">Русский язык</option>
-                    <option value="Литература">Литература</option>
-                    <option value="Англиский язык">Англиский язык</option>
-                    <option value="История">История</option>
-                    <option value="История СПБ">История СПБ</option>
-                    <option value="Алгебра">Алгебра</option>
-                    <option value="Геометрия">Геометрия</option>
-                    <option value="Информатика">Информатика</option>
-                    <option value="Биология">Биология</option>
-                    <option value="География">География</option>
-                    <option value="Физика">Физика</option>
-                    <option value="Музыка">Музыка</option>
-                    <option value="ИЗО">ИЗО</option>
-                    <option value="Труд (девочки)">Труд (девочки)</option>
-                    <option value="Труд (мальчики)">Труд (мальчики)</option>
-                </select>
+                
                 <div class="dz_cards", id="dz_cards" style="margin-left: 1%">
                 </div>
             </div> 
@@ -559,7 +542,7 @@ window.onload = function() {
     console.log(getCookie('token'))
     if(getCookie('token') != undefined)
     {
-        fetch(`http://127.0.0.1:8000/checkToken?token=${getCookie('token')}`, {
+        fetch(`https://127.0.0.1:8000/checkToken?token=${getCookie('token')}`, {
             method: "GET",
         })
         .then((response) => {
@@ -612,8 +595,8 @@ window.onload = function() {
     document.getElementById('RangeSoloSelect').addEventListener("change", () => {
     if (document.getElementById('RangeSoloSelect').value == "Range")
     {
-        document.getElementById('select_date_two').style = 'display: vis'
-        document.getElementById('LessonNameSelect').style = 'display: vis'
+        document.getElementById('select_date_two').style = 'display: block'
+        document.getElementById('LessonNameSelect').style = 'display: block'
     }
     else
     {
@@ -636,7 +619,7 @@ window.onload = function() {
 
 
 function onClickLoginButton() {
-    fetch(`http://127.0.0.1:8000/login?login=${document.getElementById("login_input").value}&password=${document.getElementById("password_input").value}`, {
+    fetch(`https://127.0.0.1:8000/login?login=${document.getElementById("login_input").value}&password=${document.getElementById("password_input").value}`, {
         method: "GET",
     })
     .then((response) => {
@@ -667,7 +650,7 @@ function onClickLoginButton() {
 }
 
 function loadSchedule() {
-    fetch(`http://127.0.0.1:8000/schedule`, {
+    fetch(`https://127.0.0.1:8000/schedule`, {
         method: "GET",
     })
     .then((response) => {
@@ -749,7 +732,7 @@ function Append(index) {
 }
 
 function DeleteTask(index) {
-    fetch(`http://127.0.0.1:8000/homeworks/${index}`, {
+    fetch(`https://127.0.0.1:8000/homeworks/${index}`, {
         method: "DELETE",
     })
 
@@ -783,7 +766,7 @@ function LoadDZPage() {
 
     var adminStatus
 
-    fetch(`http://127.0.0.1:8000/checkAdmin?token=${getCookie('token')}`, {
+    fetch(`https://127.0.0.1:8000/checkAdmin?token=${getCookie('token')}`, {
         method: "GET",
     })
 
@@ -811,16 +794,16 @@ function LoadDZPage() {
     var url
 
     if (document.getElementById('RangeSoloSelect').value == "Range") {
-        url = `http://127.0.0.1:8000/homeworks/range_date?one_date=${document.getElementById("select_date").value}&two_date=${document.getElementById("select_date_two").value}`
+        url = `https://127.0.0.1:8000/homeworks/range_date?one_date=${document.getElementById("select_date").value}&two_date=${document.getElementById("select_date_two").value}`
     } 
     else {
         if (document.getElementById("TaskDateOrDueDate").value == "due_date")
         {
-            url = `http://127.0.0.1:8000/homeworks/due_date/${document.getElementById("select_date").value}`
+            url = `https://127.0.0.1:8000/homeworks/due_date/${document.getElementById("select_date").value}`
         }
         else
         {
-            url = `http://127.0.0.1:8000/homeworks/task_date/${document.getElementById("select_date").value}`
+            url = `https://127.0.0.1:8000/homeworks/task_date/${document.getElementById("select_date").value}`
         }
 }
 
@@ -861,6 +844,7 @@ function LoadDZPage() {
                               
                           </div>`
                           // <button class="red"><img src="editlogo.png"></img>></button>
+                    newCard.class = "dzCard"
               }
               else
               {
@@ -914,7 +898,7 @@ function CheckTask() {
             "due_date": DateTaskPut.value
         }
 
-        fetch(`http://127.0.0.1:8000/homeworks`, {
+        fetch(`https://127.0.0.1:8000/homeworks`, {
         method: "POST",
         headers: {
         'Content-Type': 'application/json' // Set the content type to JSON

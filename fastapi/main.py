@@ -20,7 +20,7 @@ import pickle
 
 import Deperance.TokenGen as TokenGen
 
-app = FastAPI()
+app = FastAPI(docs_url=None)
 
 #origins = [
     #"http://127.0.0.1",
@@ -78,14 +78,14 @@ def ping_server():
 def read_item(login: str, password: str):
     db_answer = db.checkLoginData(login, password)
     
-    if (db_answer):    
+    if db_answer:    
         token = TokenGen.generateNewToken()
     
         db.writeNewToken(login, token)
         
         return {"Successfully": db_answer, "Token": token}
-        
-    return {"Successfully": db_answer}
+    else:
+        raise HTTPException(status_code=404, detail="Неверные данные!")
 
 
 @app.get("/checkToken")
@@ -109,31 +109,37 @@ def get_schedule():
     return json.loads(data)
 
 @app.post("/homeworks", response_model=Homework)
-def create_homework(homework: HomeworkCreate):
-    new_homework = Homework(
-        id=len(homeworks) + 1,
-        lesson_name=homework.lesson_name,
-        task=homework.task,
-        task_date=homework.task_date,
-        due_date=homework.due_date
-    )
-    homeworks.append(new_homework.dict())
-    
-    with open('DataBases/homeworks_data.pkl', 'wb') as f:
-        pickle.dump(homeworks, f)
-    
-    return new_homework
+def create_homework(homework: HomeworkCreate, token: str):
+    if db.checkAdminRole(token):
+        new_homework = Homework(
+            id=len(homeworks) + 1,
+            lesson_name=homework.lesson_name,
+            task=homework.task,
+            task_date=homework.task_date,
+            due_date=homework.due_date
+        )
+        homeworks.append(new_homework.dict())
+
+        with open('DataBases/homeworks_data.pkl', 'wb') as f:
+            pickle.dump(homeworks, f)
+
+        return new_homework
+    else: 
+        raise HTTPException(status_code=404, detail="No root rules")
 
 # Эндпоинт для удаления домашнего задания по ID
-@app.delete("/homeworks/{homework_id}", response_model=Homework)
-def delete_homework(homework_id: int):
-    for homework in homeworks:
-        if homework["id"] == homework_id:
-            homeworks.remove(homework)
-            return homework
-    with open('DataBases/homeworks_data.pkl', 'wb') as f:
-        pickle.dump(homeworks, f)
-    raise HTTPException(status_code=404, detail="Homework not found")
+@app.delete("/homeworks", response_model=Homework)
+def delete_homework(homework_id: int, token: str):
+    if db.checkAdminRole(token):
+        for homework in homeworks:
+            if homework["id"] == homework_id:
+                homeworks.remove(homework)
+                return homework
+        with open('DataBases/homeworks_data.pkl', 'wb') as f:
+            pickle.dump(homeworks, f)
+        raise HTTPException(status_code=404, detail="Homework not found")
+    else:
+        raise HTTPException(status_code=404, detail="No root rules")
 
 # Эндпоинт для получения домашних заданий по дате сдачи (due_date)
 @app.get("/homeworks/task_date/{task_date}", response_model=List[Homework])
@@ -157,17 +163,17 @@ def get_homeworks_by_date(one_date: date, two_date: date):
         raise HTTPException(status_code=404, detail="No homework found for the given date")
     return filtered_homeworks
 
-@app.put("/homeworks/{homework_id}", response_model=Homework)
-def update_homework(homework_id: int, homework_update: HomeworkUpdate):
-    for homework in homeworks:
-        if homework["id"] == homework_id:
-            if homework_update.lesson_name is not None:
-                homework["lesson_name"] = homework_update.lesson_name
-            if homework_update.task is not None:
-                homework["task"] = homework_update.task
-            if homework_update.task_date is not None:
-                homework["task_date"] = homework_update.task_date
-            if homework_update.due_date is not None:
-                homework["due_date"] = homework_update.due_date
-            return homework
-    raise HTTPException(status_code=404, detail="Homework not found")
+# @app.put("/homeworks/{homework_id}", response_model=Homework)
+# def update_homework(homework_id: int, homework_update: HomeworkUpdate):
+#     for homework in homeworks:
+#         if homework["id"] == homework_id:
+#             if homework_update.lesson_name is not None:
+#                 homework["lesson_name"] = homework_update.lesson_name
+#             if homework_update.task is not None:
+#                 homework["task"] = homework_update.task
+#             if homework_update.task_date is not None:
+#                 homework["task_date"] = homework_update.task_date
+#             if homework_update.due_date is not None:
+#                 homework["due_date"] = homework_update.due_date
+#             return homework
+#     raise HTTPException(status_code=404, detail="Homework not found")
