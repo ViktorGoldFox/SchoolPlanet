@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SchoolPlanet</title>
+
+    <link rel="icon" href="logo.png" type="png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="window" id="loading-window" style="display: unset;">
+        <h3>Ждем ответ от сервера...</h3>
+        <img src="loading.gif" class="loading-gif" id="loading-gif">
+    </div>
+
+    <div class="popup-content" id="connetion-lose">
+        <h3>Потерянно соеденение с сервером</h3>
+        <h5>Повторое подключение...</h5>
+        <img src="loading.gif" class="loading-gif"></img>
+    </div>
+
+    <div class="window" id="login-window">
+        <h1>Вход</h1>
+        <form>
+            <input type="text" id="lw-login-input" placeholder="Логин" maxlength="30"></input>
+
+            <input type="text" id="lw-password-input" placeholder="Пароль" maxlength="30"></input>
+        </form>
+
+        <h5 class="error-text" id="lw-error-text"></h5>
+
+        <button onclick="onClickLoginButton()">Войти</button>
+    </div>
+
+    <div class="window" id="confirm-window">
+        <h3>Вы уверенны?</h3>
+        <h3 id="cnf-delete-index" style="display: none;"><h3>
+        
+        <div style="display: flex; flex-direction: row;">
+            <button style="background-color: green;" id="cnf-yes">Да</button>
+            <button style="background-color: red; margin-left: 5px;" id="cnf-no">Нет</button>
+        </div>
+    </div>
+
+    <div class="window" id="dp-add-task">
+        <h1>Добавление дз</h1>
+        <form>
+            <select name="LessonName" id="dp-add-lesson-name">
+                <option value="Русский язык">Русский язык</option>
+                <option value="Литература">Литература</option>
+                <option value="Англиский язык">Англиский язык</option>
+                <option value="История">История</option>
+                <option value="История СПБ">История СПБ</option>
+                <option value="Обществознание">Обществознание</option>
+                <option value="ВИС">ВИС</option>
+                <option value="Алгебра">Алгебра</option>
+                <option value="Геометрия">Геометрия</option>
+                <option value="Информатика">Информатика</option>
+                <option value="Биология">Биология</option>
+                <option value="География">География</option>
+                <option value="Физика">Физика</option>
+                <option value="Музыка">Музыка</option>
+                <option value="ИЗО">ИЗО</option>
+                <option value="Труд (девочки)">Труд (девочки)</option>
+                <option value="Труд (мальчики)">Труд (мальчики)</option>
+            </select>
+            <textarea placeholder="Задание" minlength="1" maxlength="500" id="dp-add-homework" style="height: 250px"></textarea>
+            <h5>Дата задачи</h5>
+            <input placeholder="Дата задачи" id="dp-add-date-get" type="date"></input>
+            <h5>Дата сдачи</h5>
+            <input placeholder="Дата сдачи"id="dp-add-date-put" type="date"></input>
+        </form>
+        
+        <button onclick="addHomework()">Добавить</button>
+        <button onclick="closeDpAddTaskWindow()">Отмена</button>
+    </div>
+
+    <div class="container" id="container">
+        <div class="footer">
+            <button id="dz-button" onclick="loadDZPage()" style="background-image: url('homework.png'); background-position-x: 3px;"></button>
+            <button id="schedule-button" onclick="loadSchedulePage()" style="background-image: url('dates.png');"></button>
+            <button id="textbooks-button" onclick="loadTextBooksPage()" style="background-image: url('books-stack.png');"></button>
+            <button id="estimation-button" onclick="loadEstimationPage()" style="background-image: url('grade.png');"></button>
+            <button id="console-button" onclick="loadConsolePage()" style="background-image: url('console.png'); display: none;"></button>
+        </div>
+
+        <div class="main-window">
+            <div class="dz-page" id="dz-page">
+                <div class="footer" style="margin-top: 0.1%; margin: 0%; display: block;">
+                    <select name="dp-range-select" id="dp-range-select">
+                        <option value="solo">Один день</option>
+                        <option value="range">За пририуд</option>
+                    </select>
+        
+                    <select name="dp-mode-select" id="dp-mode-select">
+                        <option value="due-date">Сделать до</option>
+                        <option value="task-date">Задали</option>
+                    </select>
+                    
+                    <input type="date" id="dp-select-date">
+                    <input type="date" id="dp-select-date-two" style="display: none;">
+                </div>
+                <div class="dz-cards", id="dz-cards">
+                </div> 
+            </div>
+
+            <div class="schedule-page" id="schedule-page">
+                <div class="cards", id="schedule-cards">
+                </div>
+            </div>
+
+            <div class="textbooks-page" id="textbooks-page">
+                <h1>Учебники</h1>
+                
+                <div id="biologzi">
+                    <span>
+                        <h3>Биология:</h3>
+                        <button onclick="window.open('https://freesheld.com/schoolPlanet/files/bio-uchebnik.pdf')">></button>
+                        <button onclick="
+                        if (document.getElementById('biologzi').children.length == 1)
+                        {
+                            let newobject = document.createElement('div')
+                            newobject.id = 'predbiologzi'
+                            newobject.innerHTML = '<iframe src=https://freesheld.com/schoolPlanet/files/bio-uchebnik.pdf  width=50% height=650px></iframe>'
+                            document.getElementById('biologzi').append(newobject)
+                        }
+                        else
+                        {
+                            document.getElementById('predbiologzi').remove('predbiologzi')
+                        }
+                            " style="width: 150px;">Предпросмотр</button>
+                    </span>
+                </div>
+                <div id="algebra">
+                    <span>
+                        <h3>Алгебра:</h3>
+                        <button onclick="window.open('https://freesheld.com/schoolPlanet/files/Алгебра_7_класс.pdf')">></button>
+                        <button onclick="
+                        if (document.getElementById('algebra').children.length == 1)
+                        {
+                            let newobject = document.createElement('div')
+                            newobject.id = 'predalgebra'
+                            newobject.innerHTML = '<iframe src=https://freesheld.com/schoolPlanet/files/Алгебра_7_класс.pdf  width=50% height=650px></iframe>'
+                            document.getElementById('algebra').append(newobject)
+                        }
+                        else
+                        {
+                            document.getElementById('predalgebra').remove('predalgebra')
+                        }
+                            " style="width: 150px;">Предпросмотр</button>
+                    </span>
+                </div>
+                <div id="VIS1">
+                    <span>
+                        <h3>ВИС 1 часть:</h3>
+                        <button onclick="window.open('https://freesheld.com/schoolPlanet/files/Вероятность_и_статистика_7-9_классы_1.pdf')">></button>
+                        <button onclick="
+                        if (document.getElementById('VIS1').children.length == 1)
+                        {
+                            let newobject = document.createElement('div')
+                            newobject.id = 'predVIS1'
+                            newobject.innerHTML = '<iframe src=https://freesheld.com/schoolPlanet/files/Вероятность_и_статистика_7-9_классы_1.pdf  width=50% height=650px></iframe>'
+                            document.getElementById('VIS1').append(newobject)
+                        }
+                        else
+                        {
+                            document.getElementById('predVIS1').remove('predVIS1')
+                        }
+                            " style="width: 150px;">Предпросмотр</button>
+                    </span>
+                </div>
+                <div id="VIS2">
+                    <span>
+                        <h3>ВИС 2 часть:</h3>
+                        <button onclick="window.open('https://freesheld.com/schoolPlanet/files/Вероятность_и_статистика_7-9_классы_2.pdf')">></button>
+                        <button onclick="
+                        if (document.getElementById('VIS2').children.length == 1)
+                        {
+                            let newobject = document.createElement('div')
+                            newobject.id = 'predVIS2'
+                            newobject.innerHTML = '<iframe src=https://freesheld.com/schoolPlanet/files/Вероятность_и_статистика_7-9_классы_2.pdf  width=50% height=650px></iframe>'
+                            document.getElementById('VIS2').append(newobject)
+                        }
+                        else
+                        {
+                            document.getElementById('predVIS2').remove('predVIS2')
+                        }
+                            " style="width: 150px;">Предпросмотр</button>
+                    </span>
+                </div>
+                <div id="obshesctvo">
+                    <span>
+                        <h3>Обществознание:</h3>
+                        <button onclick="window.open('https://freesheld.com/schoolPlanet/files/Обществознание_7_класс.pdf')">></button>
+                        <button onclick="
+                        if (document.getElementById('obshesctvo').children.length == 1)
+                        {
+                            let newobject = document.createElement('div')
+                            newobject.id = 'predobshesctvo'
+                            newobject.innerHTML = '<iframe src=https://freesheld.com/schoolPlanet/files/Обществознание_7_класс.pdf  width=50% height=650px></iframe>'
+                            document.getElementById('obshesctvo').append(newobject)
+                        }
+                        else
+                        {
+                            document.getElementById('predobshesctvo').remove('predobshesctvo')
+                        }
+                            " style="width: 150px;">Предпросмотр</button>
+                    </span>
+                </div>
+                <div id="Phisic">
+                    <span>
+                        <h3>Физика:</h3>
+                        <button onclick="window.open('https://freesheld.com/schoolPlanet/files/Физика_7_класс.pdf')">></button>
+                        <button onclick="
+                        if (document.getElementById('Phisic').children.length == 1)
+                        {
+                            let newobject = document.createElement('div')
+                            newobject.id = 'predPhisic'
+                            newobject.innerHTML = '<iframe src=https://freesheld.com/schoolPlanet/files/Физика_7_класс.pdf  width=50% height=650px></iframe>'
+                            document.getElementById('Phisic').append(newobject)
+                        }
+                        else
+                        {
+                            document.getElementById('predPhisic').remove('predPhisic')
+                        }
+                            " style="width: 150px;">Предпросмотр</button>
+                    </span>
+                </div>
+                <h1>Файлы</h1>
+                <div id="ust_dates">
+                    <span>
+                        <h3>История даты:</h3>
+                        <button onclick="window.open('https://freesheld.com/schoolPlanet/files/ust_dates.pdf')">></button>
+                        <button onclick="
+                        if (document.getElementById('ust_dates').children.length == 1)
+                        {
+                            let newobject = document.createElement('div')
+                            newobject.id = 'pred-ust-dates'
+                            newobject.innerHTML = '<iframe src=https://freesheld.com/schoolPlanet/files/ust_dates.pdf  width=50% height=650px></iframe>'
+                            document.getElementById('ust_dates').append(newobject)
+                        }
+                        else
+                        {
+                            document.getElementById('pred-ust-dates').remove('pred_ust_dates')
+                        }
+                        "
+                        style="width: 150px;">Предпросмотр</button>
+                    </span>
+                    </div>
+                    <div id="obsh_dates">
+                        <span>
+                            <h3>Обществознание термины:</h3>
+                            <button onclick="window.open('https://freesheld.com/schoolPlanet/files/obsh-dates.pdf')">></button>
+                            <button onclick="
+                            if (document.getElementById('obsh_dates').children.length == 1)
+                            {
+                                let newobject = document.createElement('div')
+                                newobject.id = 'pred_obsh_dates'
+                                newobject.innerHTML = '<iframe src=https://freesheld.com/schoolPlanet/files/obsh-dates.pdf  width=50% height=650px></iframe>'
+                                document.getElementById('obsh_dates').append(newobject)
+                            }
+                            else
+                            {
+                                document.getElementById('pred_obsh_dates').remove('pred_obsh_dates')
+                            }
+                                " style="width: 150px;">Предпросмотр</button>
+                        </span>
+                </div>
+            </div> 
+            
+            <div class="estimation-page" id="estimation-page">
+                <span id="profile" class="profile">
+                 <span id="pr-fio"class="pr-fio">
+                     <h3 id="pr-ls-name-text"></h3>
+                    <h3 id="pr-name-text"></h3>
+                 </span>
+                    <h5 id="pr-class"></h5>
+                </span>
+                <h3 style="text-align: center; font-size: auto;">Оценки на момент: 22.10.2024</h3>
+                <table class="tftable" id="est-table" border="1">
+                    <tr><th>Предмет</th><th>Оценки</th><th>Средний балл</th><th>Четвертная оценка</th><th>Колличество пропусков</th></tr>
+                </table>
+            </div>
+
+            <div class="console-page" id="console-page">
+                <h1>Журнал</h1>
+                <table class="tftable" id="classbook-table" border="1">
+                    <tr><th>ФИО</th><th>Присутствие</th></tr>
+                </table>
+
+                <h1>Средние баллы</h1>
+                <table class="tftable" id="averange-table" border="1">
+                    <tr><th>Предмет</th><th>Средний балл</th></tr><!-- <th>колл-во 5</th><th>колл-во 4</th><th>колл-во 3</th><th>колл-во 2</th><th>колл-во 1</th></tr> -->
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
